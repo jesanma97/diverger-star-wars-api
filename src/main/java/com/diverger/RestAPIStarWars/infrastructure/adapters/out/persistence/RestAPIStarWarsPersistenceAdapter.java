@@ -7,6 +7,7 @@ import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.*;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.BadRequestException;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.CharacterNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -24,6 +25,7 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
         this.webClient = webClient;
     }
     @Override
+    @Cacheable(value= "characterCache", key = "#name")
     public Mono<CharacterResponse> getCharacterInfo(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new BadRequestException("The character name must not be empty.");
