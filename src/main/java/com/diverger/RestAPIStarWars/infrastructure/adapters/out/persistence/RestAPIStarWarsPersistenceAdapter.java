@@ -52,6 +52,7 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
     }
 
     private Mono<CharacterResponse> buildCharacterInfo(CharacterDTO character) {
+        LOGGER.info("Building character info for: {}", character.getName());
         Mono<String> planetName = webClient.get()
                 .uri(character.getHomeWorld())
                 .retrieve()
@@ -92,6 +93,8 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
     }
 
     protected Mono<String> getFastestVehicleUrl(CharacterDTO character) {
+        LOGGER.info("Fetching fastest vehicle URL for character: {}", character.getName());
+
         List<String> allUrls = new ArrayList<>();
         allUrls.addAll(character.getVehicles());
         allUrls.addAll(character.getStarships());

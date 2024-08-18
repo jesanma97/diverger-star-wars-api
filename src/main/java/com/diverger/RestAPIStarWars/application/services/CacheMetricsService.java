@@ -23,8 +23,7 @@ public class CacheMetricsService {
             com.github.benmanes.caffeine.cache.Cache caffeineCache =
                     (com.github.benmanes.caffeine.cache.Cache) cache.getNativeCache();
             CacheStats stats = caffeineCache.stats();
-            System.out.println("Cache Stats: " + stats);
-            LOGGER.info(String.format("Cache Stats: ", stats));
+            LOGGER.info("Cache Stats: {}", stats);
         } else {
             LOGGER.info("Cache not found or not using Caffeine.");
         }
