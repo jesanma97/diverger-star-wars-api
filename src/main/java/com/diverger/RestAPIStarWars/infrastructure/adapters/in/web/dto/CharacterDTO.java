@@ -1,6 +1,7 @@
 package com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class CharacterDTO {
     @JsonProperty("birth_year")
     private String birthYear;
