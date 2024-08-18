@@ -13,7 +13,5 @@ COPY target/RestAPIStarWars-0.0.1-SNAPSHOT.jar diverger-star-wars-api.jar
 # Exposes the port on which the application will be available
 EXPOSE 8080
 
-ENV SPRING_DATASOURCE_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS=true
-
 # Command to run the application
 ENTRYPOINT ["java","-jar","diverger-star-wars-api.jar"]
