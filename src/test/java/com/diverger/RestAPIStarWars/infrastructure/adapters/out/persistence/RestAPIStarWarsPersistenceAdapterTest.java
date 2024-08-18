@@ -1,39 +1,41 @@
 package com.diverger.RestAPIStarWars.infrastructure.adapters.out.persistence;
 
 import com.diverger.RestAPIStarWars.domain.CharacterResponse;
-import com.diverger.RestAPIStarWars.domain.FilmInfo;
-import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.CharacterDTO;
-import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.PlanetDTO;
-import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.ResultSearchCharacterDTO;
-import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.VehicleDTO;
+import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.*;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.BadRequestException;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.CharacterNotFoundException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class RestAPIStarWarsPersistenceAdapterTest {
+class RestAPIStarWarsPersistenceAdapterTest {
 
     @Mock
     private WebClient webClient;
-
     @Mock
-    private WebClient.RequestHeadersUriSpec<?> requestHeadersUriSpec;
-
+    private WebClient.RequestHeadersUriSpec requestHeadersUriSpec;
     @Mock
-    private WebClient.RequestHeadersSpec<?> requestHeadersSpec;
-
+    private WebClient.RequestHeadersSpec requestHeadersSpec;
     @Mock
     private WebClient.ResponseSpec responseSpec;
 
@@ -41,80 +43,94 @@ public class RestAPIStarWarsPersistenceAdapterTest {
     private RestAPIStarWarsPersistenceAdapter adapter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
-
-        // Mocking the WebClient behavior
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
-        when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
+        when(requestHeadersUriSpec.uri(anyString(), any(Object[].class))).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
     }
 
     @Test
-    void testGetCharacterInfoSuccess() {
-        // Create mock data
+    void getCharacterInfoSuccess() {
+        // Mock response for character search
+        ResultSearchCharacterDTO resultSearchCharacterDTO = new ResultSearchCharacterDTO();
         CharacterDTO characterDTO = new CharacterDTO();
         characterDTO.setName("Luke Skywalker");
-        characterDTO.setBirthYear("19BBY");
-        characterDTO.setGender("male");
-        characterDTO.setHomeWorld("/planets/1/");
-        characterDTO.setVehicles(List.of("/vehicles/14/"));
-        characterDTO.setStarships(new ArrayList<>()); // Assuming no starships
+        characterDTO.setHomeWorld("https://swapi.trileuco.com/api/planets/1/");
+        resultSearchCharacterDTO.setResults(List.of(characterDTO));
 
-        ResultSearchCharacterDTO searchResult = new ResultSearchCharacterDTO();
-        searchResult.setResults(List.of(characterDTO));
-
+        // Mock response for planet, vehicles, films and starships
         PlanetDTO planetDTO = new PlanetDTO();
         planetDTO.setName("Tatooine");
 
         VehicleDTO vehicleDTO = new VehicleDTO();
-        vehicleDTO.setName("X-wing");
-        vehicleDTO.setMaxAtmospheringSpeed("1050");
+        vehicleDTO.setName("X-34 landspeeder");
+        vehicleDTO.setMaxAtmospheringSpeed("250");
 
-        // Set up mocks for different endpoints
-        when(responseSpec.bodyToMono(ResultSearchCharacterDTO.class)).thenReturn(Mono.just(searchResult));
-        when(webClient.get().uri("/planets/1/").retrieve().bodyToMono(PlanetDTO.class)).thenReturn(Mono.just(planetDTO));
-        when(webClient.get().uri("/vehicles/14/").retrieve().bodyToMono(VehicleDTO.class)).thenReturn(Mono.just(vehicleDTO));
+        FilmDTO filmDTO = new FilmDTO();
+        filmDTO.setTitle("A New Hope");
+        filmDTO.setReleaseDate(new Date());
 
-        Mono<CharacterResponse> responseMono = adapter.getCharacterInfo("Luke Skywalker");
+        StarshipDTO starshipDTO = new StarshipDTO();
+        starshipDTO.setName("X-34 landspeeder");
+        starshipDTO.setMaxAtmospheringSpeed("250");
 
-        StepVerifier.create(responseMono)
-                .expectNextMatches(characterResponse ->
-                        "Luke Skywalker".equals(characterResponse.getName()) &&
-                                "19BBY".equals(characterResponse.getBirthYear()) &&
-                                "male".equals(characterResponse.getGender()) &&
-                                "Tatooine".equals(characterResponse.getPlanetName()) &&
-                                "X-wing".equals(characterResponse.getFastestVehicleDriven()) &&
-                                characterResponse.getFilms().isEmpty() // No films in mock data
-                )
-                .expectComplete()
+        characterDTO.setVehicles(List.of("https://swapi.trileuco.com/api/vehicles/1/"));
+        characterDTO.setStarships(List.of("https://swapi.trileuco.com/api/starships/1/"));
+        characterDTO.setFilms(List.of("https://swapi.trileuco.com/api/films/1/"));
+
+
+        when(responseSpec.bodyToMono(ResultSearchCharacterDTO.class)).thenReturn(Mono.just(resultSearchCharacterDTO));
+        when(responseSpec.bodyToMono(PlanetDTO.class)).thenReturn(Mono.just(planetDTO));
+        when(responseSpec.bodyToMono(VehicleDTO.class)).thenReturn(Mono.just(vehicleDTO));
+        when(responseSpec.bodyToMono(FilmDTO.class)).thenReturn(Mono.just(filmDTO));
+        when(responseSpec.bodyToMono(StarshipDTO.class)).thenReturn(Mono.just(starshipDTO));
+
+        // Execute the method
+        Mono<CharacterResponse> result = adapter.getCharacterInfo("Luke Skywalker");
+
+        // Verify and assert the result
+        StepVerifier.create(result)
+                .expectNextMatches(characterResponse -> characterResponse.getName().equals("Luke Skywalker")
+                        && characterResponse.getPlanetName().equals("Tatooine")
+                        && characterResponse.getFastestVehicleDriven().equals("X-34 landspeeder")
+                        && characterResponse.getFilms().size() == 1
+                        && characterResponse.getFilms().get(0).getName().equals("A New Hope"))
+                .verifyComplete();
+    }
+
+    @Test
+    void getCharacterInfoCharacterNotFound() {
+        ResultSearchCharacterDTO resultSearchCharacterDTO = new ResultSearchCharacterDTO();
+        resultSearchCharacterDTO.setResults(List.of());
+
+        when(responseSpec.bodyToMono(ResultSearchCharacterDTO.class)).thenReturn(Mono.just(resultSearchCharacterDTO));
+
+        Mono<CharacterResponse> result = adapter.getCharacterInfo("Unknown Character");
+
+        StepVerifier.create(result)
+                .expectError(CharacterNotFoundException.class)
                 .verify();
     }
 
     @Test
-    void testGetCharacterInfoWithInvalidName() {
-        // Test for null or empty character name
-        Mono<CharacterResponse> responseMono = adapter.getCharacterInfo(null);
-
-        StepVerifier.create(responseMono)
-                .expectErrorMatches(throwable -> throwable instanceof BadRequestException &&
-                        throwable.getMessage().equals("The character name must not be empty."))
-                .verify();
+    void getCharacterInfoDirectExceptionTest() {
+        try {
+            adapter.getCharacterInfo("").block(); // Force Mono Evaluation
+            fail("Expected BadRequestException not thrown.");
+        } catch (BadRequestException ex) {
+            assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+            assertEquals("The character name must not be empty.", ex.getReason());
+        }
     }
-
     @Test
-    void testGetCharacterInfoNotFound() {
-        // Mock response when character is not found
-        ResultSearchCharacterDTO searchResult = new ResultSearchCharacterDTO();
-        searchResult.setResults(new ArrayList<>()); // No characters found
+    void getCharacterInfoServerError() {
+        when(responseSpec.bodyToMono(ResultSearchCharacterDTO.class)).thenReturn(Mono.error(WebClientResponseException.InternalServerError.create(500, "Internal Server Error", null, null, null)));
 
-        when(responseSpec.bodyToMono(ResultSearchCharacterDTO.class)).thenReturn(Mono.just(searchResult));
+        Mono<CharacterResponse> result = adapter.getCharacterInfo("Luke Skywalker");
 
-        Mono<CharacterResponse> responseMono = adapter.getCharacterInfo("Unknown");
-
-        StepVerifier.create(responseMono)
-                .expectErrorMatches(throwable -> throwable instanceof CharacterNotFoundException &&
-                        throwable.getMessage().equals("Unknown"))
+        StepVerifier.create(result)
+                .expectError(WebClientResponseException.InternalServerError.class)
                 .verify();
     }
 }

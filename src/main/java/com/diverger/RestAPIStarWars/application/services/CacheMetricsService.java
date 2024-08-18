@@ -1,6 +1,8 @@
 package com.diverger.RestAPIStarWars.application.services;
 
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class CacheMetricsService {
 
     private final CacheManager cacheManager;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CacheMetricsService.class);
 
     public CacheMetricsService(CacheManager cacheManager) {
         this.cacheManager = cacheManager;
@@ -21,8 +24,9 @@ public class CacheMetricsService {
                     (com.github.benmanes.caffeine.cache.Cache) cache.getNativeCache();
             CacheStats stats = caffeineCache.stats();
             System.out.println("Cache Stats: " + stats);
+            LOGGER.info(String.format("Cache Stats: ", stats));
         } else {
-            System.out.println("Cache not found or not using Caffeine.");
+            LOGGER.info("Cache not found or not using Caffeine.");
         }
     }
 }

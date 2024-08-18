@@ -9,7 +9,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class CharacterDTO {
     @JsonProperty("birth_year")
     private String birthYear;
