@@ -1,0 +1,198 @@
+{
+	"info": {
+		"_postman_id": "c2e77e9d-0e77-4651-a248-4defebb8790e",
+		"name": "RestAPIStarWars",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37729018"
+	},
+	"item": [
+		{
+			"name": "Test 1 Luke Skywalker OK",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Conten",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8081/swapi-proxy/person-info?name=Luke%20Skywalker",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"swapi-proxy",
+						"person-info"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Luke%20Skywalker"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test 2 Darth Vader OK",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/swapi-proxy/person-info?name=Darth%20Vader",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"swapi-proxy",
+						"person-info"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Darth%20Vader"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test 3 Obi-Wan Kenobi OK",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/swapi-proxy/person-info?name=Obi-Wan%20Kenobi",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"swapi-proxy",
+						"person-info"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Obi-Wan%20Kenobi"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test 4 C-3PO OK",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/swapi-proxy/person-info?name=C-3PO",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"swapi-proxy",
+						"person-info"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "C-3PO"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test 5 Error Method Not Allowed 405",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/swapi-proxy/person-info?name=C-3PO",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"swapi-proxy",
+						"person-info"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "C-3PO"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test 6 Error Character Not Found 404",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/swapi-proxy/person-info?name=Green%20Day",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"swapi-proxy",
+						"person-info"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Green%20Day"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test 7 Error No Param Bad Request 400",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/swapi-proxy/person-info?name=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"swapi-proxy",
+						"person-info"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
