@@ -4,6 +4,7 @@ import com.diverger.RestAPIStarWars.application.ports.out.RestAPIStarWarsPersist
 import com.diverger.RestAPIStarWars.domain.CharacterResponse;
 import com.diverger.RestAPIStarWars.domain.FilmInfo;
 import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.*;
+import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.BadRequestException;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.CharacterNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,11 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
     }
     @Override
     public Mono<CharacterResponse> getCharacterInfo(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new BadRequestException("The character name must not be empty.");
+        }
+
+
         return webClient.get()
                 .uri("/people/?search={name}", name)
                 .retrieve()
@@ -81,7 +87,7 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
 
         // If there are no URLs, return null
         if (allUrls.isEmpty()) {
-            return Mono.justOrEmpty(null);
+            return Mono.justOrEmpty("n/a");
         }
 
         // Create a Mono flow to get all the details of vehicles and spaceships
