@@ -32,7 +32,7 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
                     return Mono.justOrEmpty(dto.getResults().stream()
                             .filter(character -> character.getName().equalsIgnoreCase(name))
                             .findFirst())
-                            .switchIfEmpty(Mono.error(new CharacterNotFoundException(name)))
+                            .switchIfEmpty(Mono.error(new CharacterNotFoundException(name))) // If it does not find a character in the filter, throw exception
                             .flatMap(this::buildCharacterInfo);
                 });
     }
@@ -41,7 +41,7 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
         Mono<String> planetName =  webClient.get()
                 .uri(character.getHomeWorld())
                 .retrieve()
-                .bodyToMono(PlanetDTO.class) // Mapear la respuesta a PlanetDTO
+                .bodyToMono(PlanetDTO.class) // Map the response to PlanetDTO
                 .map(PlanetDTO::getName);
 
         Mono<String> fastestVehicleMono = getFastestVehicleUrl(character);
