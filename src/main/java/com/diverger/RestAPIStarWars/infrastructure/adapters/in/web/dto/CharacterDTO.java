@@ -1,6 +1,7 @@
 package com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
