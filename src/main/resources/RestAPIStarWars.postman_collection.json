@@ -193,6 +193,58 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Test 8 Name Contains Da OK",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/swapi-proxy/person-info?name=Da",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"swapi-proxy",
+						"person-info"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Da"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test 9 Name Contains Lu OK",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/swapi-proxy/person-info?name=Lu",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"swapi-proxy",
+						"person-info"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Lu"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

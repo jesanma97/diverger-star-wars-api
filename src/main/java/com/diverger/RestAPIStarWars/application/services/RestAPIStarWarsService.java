@@ -5,7 +5,7 @@ import com.diverger.RestAPIStarWars.domain.CharacterResponse;
 import com.diverger.RestAPIStarWars.infrastructure.adapters.out.persistence.RestAPIStarWarsPersistenceAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @Service
 public class RestAPIStarWarsService {
@@ -17,7 +17,7 @@ public class RestAPIStarWarsService {
         this.restAPIStarWarsPersistencePort = restAPIStarWarsPersistenceAdapter;
     }
 
-    public Mono<CharacterResponse> getCharacterInfo(String name) {
+    public Flux<CharacterResponse> getCharacterInfo(String name) {
         return restAPIStarWarsPersistencePort.getCharacterInfo(name);
     }
 }

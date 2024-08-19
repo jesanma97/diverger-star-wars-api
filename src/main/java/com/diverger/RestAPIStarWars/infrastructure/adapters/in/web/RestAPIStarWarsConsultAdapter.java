@@ -5,7 +5,7 @@ import com.diverger.RestAPIStarWars.application.services.RestAPIStarWarsService;
 import com.diverger.RestAPIStarWars.domain.CharacterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @Component
 public class RestAPIStarWarsConsultAdapter implements RestAPIStarWarsConsultPort {
@@ -18,7 +18,7 @@ public class RestAPIStarWarsConsultAdapter implements RestAPIStarWarsConsultPort
     }
 
     @Override
-    public Mono<CharacterResponse> getCharacterInfo(String name) {
+    public Flux<CharacterResponse> getCharacterInfo(String name) {
         return restAPIStarWarsService.getCharacterInfo(name);
     }
 }

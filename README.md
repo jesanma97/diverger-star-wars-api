@@ -21,6 +21,108 @@ In the `src/main/resources` directory, you will find:
     - **File**: `RestAPIStarWars.yaml`
     - **Usage**: The Swagger documentation can be viewed by importing the `RestAPIStarWars.yaml` file into a Swagger UI tool or by using online Swagger editors such as [Swagger Editor](https://editor.swagger.io/).
 
+## Usage
+
+To use the API and retrieve information about a character, you should make an HTTP GET request to the following URL:
+```
+http://{host}:{port}/swapi-proxy/person-info?name={characterName}
+```
+### Example Request
+
+If you want to get information about "Luke Skywalker," the request URL would be:
+```
+http://{host}:{port}/swapi-proxy/person-info?name=Luke%20Skywalker
+```
+
+### Parameters
+
+- **`host`**: The domain name or IP address where the service is running.
+- **`port`**: The port on which the service is listening.
+- **`name`**: The name of the character you want to retrieve information about. This can be any string, not necessarily the full name of the character. For example, you can use just `Lu` to search for "Luke Skywalker" and other characters as "Luminara Unduli" . This name should be URL-encoded (e.g., spaces replaced with `%20`).
+
+### Example Response
+
+The response will be a JSON array of objects containing the character's information, including details such as name, birth year, gender, home planet, fastest vehicle driven, and the films they appeared in.
+
+```json
+[
+   {
+      "name": "Luke Skywalker",
+      "birth_year": "19BBY",
+      "gender": "male",
+      "planet_name": "Tatooine",
+      "fastest_vehicle_driven": "X-wing",
+      "films": [
+         {
+            "name": "A New Hope",
+            "release_date": "1977-05-25"
+         },
+         {
+            "name": "The Empire Strikes Back",
+            "release_date": "1980-05-21"
+         }
+      ]
+   }
+]
+```
+
+### Other Example Request
+
+If you want to get information about "Lu," the request URL would be:
+```
+http://{host}:{port}/swapi-proxy/person-info?name=Lu
+```
+### Example Response
+
+The response will be a JSON array of objects containing the character's information, including details such as name, birth year, gender, home planet, fastest vehicle driven, and the films they appeared in.
+
+```json
+[
+   {
+      "name": "Luminara Unduli",
+      "gender": "female",
+      "films": [
+         {
+            "name": "Revenge of the Sith",
+            "release_date": "2005-05-19"
+         },
+         {
+            "name": "Attack of the Clones",
+            "release_date": "2002-05-16"
+         }
+      ],
+      "birth_year": "58BBY",
+      "planet_name": "Mirial",
+      "fastest_vehicle_driven": "n/a"
+   },
+   {
+      "name": "Luke Skywalker",
+      "gender": "male",
+      "films": [
+         {
+            "name": "The Empire Strikes Back",
+            "release_date": "1980-05-17"
+         },
+         {
+            "name": "A New Hope",
+            "release_date": "1977-05-25"
+         },
+         {
+            "name": "Return of the Jedi",
+            "release_date": "1983-05-25"
+         },
+         {
+            "name": "Revenge of the Sith",
+            "release_date": "2005-05-19"
+         }
+      ],
+      "birth_year": "19BBY",
+      "planet_name": "Tatooine",
+      "fastest_vehicle_driven": "X-wing"
+   }
+]
+```
+
 
 ## Project Setup
 

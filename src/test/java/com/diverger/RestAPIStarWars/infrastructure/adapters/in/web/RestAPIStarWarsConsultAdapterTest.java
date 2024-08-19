@@ -11,7 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.util.Date;
@@ -27,27 +27,46 @@ public class RestAPIStarWarsConsultAdapterTest {
     @InjectMocks
     private RestAPIStarWarsConsultAdapter restAPIStarWarsConsultAdapter;
 
-    Mono<CharacterResponse> characterResponseMono;
+    Flux<CharacterResponse> characterResponseFlux;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         this.restAPIStarWarsConsultAdapter = new RestAPIStarWarsConsultAdapter(restAPIStarWarsService);
-        CharacterResponse characterResponse = new CharacterResponse();
-        characterResponse.setName("Luke Skywalker");
-        characterResponse.setBirthYear("19BBY");
-        characterResponse.setGender("male");
-        characterResponse.setPlanetName("Tatooine");
-        characterResponse.setFastestVehicleDriven("X-wing");
-        characterResponse.setFilms(List.of(new FilmInfo("A New Hope", new Date()), new FilmInfo("The Empire Strikes Back", new Date())));
 
-        characterResponseMono = Mono.just(characterResponse);
+        // Configuración de CharacterResponse para las pruebas
+        CharacterResponse characterResponse1 = new CharacterResponse();
+        characterResponse1.setName("Luke Skywalker");
+        characterResponse1.setBirthYear("19BBY");
+        characterResponse1.setGender("male");
+        characterResponse1.setPlanetName("Tatooine");
+        characterResponse1.setFastestVehicleDriven("X-wing");
+        characterResponse1.setFilms(List.of(
+                new FilmInfo("A New Hope", new Date()),
+                new FilmInfo("The Empire Strikes Back", new Date())
+        ));
+
+        CharacterResponse characterResponse2 = new CharacterResponse();
+        characterResponse2.setName("Leia Organa");
+        characterResponse2.setBirthYear("19BBY");
+        characterResponse2.setGender("female");
+        characterResponse2.setPlanetName("Alderaan");
+        characterResponse2.setFastestVehicleDriven("Speeder Bike");
+        characterResponse2.setFilms(List.of(
+                new FilmInfo("A New Hope", new Date()),
+                new FilmInfo("Return of the Jedi", new Date())
+        ));
+
+        // Convertir los CharacterResponse en un Flux
+        characterResponseFlux = Flux.just(characterResponse1, characterResponse2);
     }
-    @Test
-    void getCharacterInfo(){
-        when(this.restAPIStarWarsService.getCharacterInfo(Mockito.anyString())).thenReturn(characterResponseMono);
-        Mono<CharacterResponse> responseMono = restAPIStarWarsConsultAdapter.getCharacterInfo("Luke Skywalker");
 
-        StepVerifier.create(responseMono)
+    @Test
+    void getCharacterInfo() {
+        when(this.restAPIStarWarsService.getCharacterInfo(Mockito.anyString())).thenReturn(characterResponseFlux);
+
+        Flux<CharacterResponse> responseFlux = restAPIStarWarsConsultAdapter.getCharacterInfo("Skywalker");
+
+        StepVerifier.create(responseFlux)
                 .expectNextMatches(characterResponse -> {
                     return characterResponse.getName().equals("Luke Skywalker") &&
                             characterResponse.getBirthYear().equals("19BBY") &&
@@ -58,8 +77,17 @@ public class RestAPIStarWarsConsultAdapterTest {
                             characterResponse.getFilms().get(0).getName().equals("A New Hope") &&
                             characterResponse.getFilms().get(1).getName().equals("The Empire Strikes Back");
                 })
+                .expectNextMatches(characterResponse -> {
+                    return characterResponse.getName().equals("Leia Organa") &&
+                            characterResponse.getBirthYear().equals("19BBY") &&
+                            characterResponse.getGender().equals("female") &&
+                            characterResponse.getPlanetName().equals("Alderaan") &&
+                            characterResponse.getFastestVehicleDriven().equals("Speeder Bike") &&
+                            characterResponse.getFilms().size() == 2 &&
+                            characterResponse.getFilms().get(0).getName().equals("A New Hope") &&
+                            characterResponse.getFilms().get(1).getName().equals("Return of the Jedi");
+                })
                 .expectComplete()
                 .verify();
-
     }
 }
