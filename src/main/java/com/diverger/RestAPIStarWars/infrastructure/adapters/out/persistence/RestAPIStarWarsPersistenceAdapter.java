@@ -42,10 +42,10 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
                 .retrieve()
                 .bodyToMono(ResultSearchCharacterDTO.class)
                 .flatMapMany(dto -> {
-                    // Convertimos la lista de CharacterDTO a un Flux de CharacterDTO
+                    // Turn the CharacterDTO list to a CharacterDTO Flux
                     return Flux.fromIterable(dto.getResults())
-                            .flatMap(this::buildCharacterInfo) // Convertimos cada CharacterDTO a CharacterResponse
-                            .switchIfEmpty(Flux.error(new CharacterNotFoundException(name))); // Si la lista está vacía, lanzamos un error
+                            .flatMap(this::buildCharacterInfo) // Turn each CharacterDTO to CharacterResponse
+                            .switchIfEmpty(Flux.error(new CharacterNotFoundException(name))); // If the List is empty, throws an exception
                 })
                 .doOnError(throwable -> LOGGER.error("Error occurred while fetching character info", throwable));
     }
