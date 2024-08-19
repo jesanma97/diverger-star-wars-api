@@ -50,42 +50,44 @@ paths:
 components:
   schemas:
     CharacterInfo:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the character.
-          example: Luke Skywalker
-        birth_year:
-          type: string
-          description: The birth year of the character.
-          example: 19BBY
-        gender:
-          type: string
-          description: The gender of the character.
-          example: male
-        planet_name:
-          type: string
-          description: The name of the character's home planet.
-          example: Tatooine
-        fastest_vehicle_driven:
-          type: string
-          description: The name of the fastest vehicle the character has driven.
-          example: X-wing
-        films:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: Title of the film.
-                example: Revenge of the Sith
-              release_date:
-                type: string
-                format: date
-                description: Release date of the film.
-                example: 2005-05-19
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: The name of the character.
+            example: Luke Skywalker
+          birth_year:
+            type: string
+            description: The birth year of the character.
+            example: 19BBY
+          gender:
+            type: string
+            description: The gender of the character.
+            example: male
+          planet_name:
+            type: string
+            description: The name of the character's home planet.
+            example: Tatooine
+          fastest_vehicle_driven:
+            type: string
+            description: The name of the fastest vehicle the character has driven.
+            example: X-wing
+          films:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Title of the film.
+                  example: Revenge of the Sith
+                release_date:
+                  type: string
+                  format: date
+                  description: Release date of the film.
+                  example: 2005-05-19
     ErrorResponse:
       type: object
       properties:

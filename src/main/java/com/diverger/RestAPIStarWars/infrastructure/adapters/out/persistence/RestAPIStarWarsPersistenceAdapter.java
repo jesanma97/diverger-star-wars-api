@@ -31,7 +31,7 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
 
     @Override
     @Cacheable(value = "characterCache", key = "#name")
-    public Mono<CharacterResponse> getCharacterInfo(String name) {
+    public Flux<CharacterResponse> getCharacterInfo(String name) {
         if (name == null || name.trim().isEmpty()) {
             LOGGER.error("Character name is null or empty");
             throw new BadRequestException("The character name must not be empty.");
@@ -41,12 +41,11 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
                 .uri("/people/?search={name}", name)
                 .retrieve()
                 .bodyToMono(ResultSearchCharacterDTO.class)
-                .flatMap(dto -> {
-                    return Mono.justOrEmpty(dto.getResults().stream()
-                                    .filter(character -> character.getName().equalsIgnoreCase(name))
-                                    .findFirst())
-                            .switchIfEmpty(Mono.error(new CharacterNotFoundException(name))) // If it does not find a character in the filter, throw exception
-                            .flatMap(this::buildCharacterInfo);
+                .flatMapMany(dto -> {
+                    // Convertimos la lista de CharacterDTO a un Flux de CharacterDTO
+                    return Flux.fromIterable(dto.getResults())
+                            .flatMap(this::buildCharacterInfo) // Convertimos cada CharacterDTO a CharacterResponse
+                            .switchIfEmpty(Flux.error(new CharacterNotFoundException(name))); // Si la lista está vacía, lanzamos un error
                 })
                 .doOnError(throwable -> LOGGER.error("Error occurred while fetching character info", throwable));
     }

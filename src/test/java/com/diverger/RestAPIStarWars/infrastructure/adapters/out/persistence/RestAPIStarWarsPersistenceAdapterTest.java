@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -59,7 +60,7 @@ class RestAPIStarWarsPersistenceAdapterTest {
         characterDTO.setHomeWorld("https://swapi.trileuco.com/api/planets/1/");
         resultSearchCharacterDTO.setResults(List.of(characterDTO));
 
-        // Mock response for planet, vehicles, films and starships
+        // Mock response for planet, vehicles, films, and starships
         PlanetDTO planetDTO = new PlanetDTO();
         planetDTO.setName("Tatooine");
 
@@ -75,21 +76,22 @@ class RestAPIStarWarsPersistenceAdapterTest {
         starshipDTO.setName("X-34 landspeeder");
         starshipDTO.setMaxAtmospheringSpeed("250");
 
+        // Setting up lists in CharacterDTO
         characterDTO.setVehicles(List.of("https://swapi.trileuco.com/api/vehicles/1/"));
         characterDTO.setStarships(List.of("https://swapi.trileuco.com/api/starships/1/"));
         characterDTO.setFilms(List.of("https://swapi.trileuco.com/api/films/1/"));
 
-
+        // Mocking the responses from the WebClient
         when(responseSpec.bodyToMono(ResultSearchCharacterDTO.class)).thenReturn(Mono.just(resultSearchCharacterDTO));
         when(responseSpec.bodyToMono(PlanetDTO.class)).thenReturn(Mono.just(planetDTO));
         when(responseSpec.bodyToMono(VehicleDTO.class)).thenReturn(Mono.just(vehicleDTO));
         when(responseSpec.bodyToMono(FilmDTO.class)).thenReturn(Mono.just(filmDTO));
         when(responseSpec.bodyToMono(StarshipDTO.class)).thenReturn(Mono.just(starshipDTO));
 
-        // Execute the method
-        Mono<CharacterResponse> result = adapter.getCharacterInfo("Luke Skywalker");
+        // Execute the method, now returning a Flux instead of a Mono
+        Flux<CharacterResponse> result = adapter.getCharacterInfo("Luke Skywalker");
 
-        // Verify and assert the result
+        // Verify and assert the result using StepVerifier
         StepVerifier.create(result)
                 .expectNextMatches(characterResponse -> characterResponse.getName().equals("Luke Skywalker")
                         && characterResponse.getPlanetName().equals("Tatooine")
@@ -106,7 +108,7 @@ class RestAPIStarWarsPersistenceAdapterTest {
 
         when(responseSpec.bodyToMono(ResultSearchCharacterDTO.class)).thenReturn(Mono.just(resultSearchCharacterDTO));
 
-        Mono<CharacterResponse> result = adapter.getCharacterInfo("Unknown Character");
+        Flux<CharacterResponse> result = adapter.getCharacterInfo("Unknown Character");
 
         StepVerifier.create(result)
                 .expectError(CharacterNotFoundException.class)
@@ -116,7 +118,7 @@ class RestAPIStarWarsPersistenceAdapterTest {
     @Test
     void getCharacterInfoDirectExceptionTest() {
         try {
-            adapter.getCharacterInfo("").block(); // Force Mono Evaluation
+            adapter.getCharacterInfo("").blockFirst(); // Force Mono Evaluation
             fail("Expected BadRequestException not thrown.");
         } catch (BadRequestException ex) {
             assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -127,7 +129,7 @@ class RestAPIStarWarsPersistenceAdapterTest {
     void getCharacterInfoServerError() {
         when(responseSpec.bodyToMono(ResultSearchCharacterDTO.class)).thenReturn(Mono.error(WebClientResponseException.InternalServerError.create(500, "Internal Server Error", null, null, null)));
 
-        Mono<CharacterResponse> result = adapter.getCharacterInfo("Luke Skywalker");
+        Flux<CharacterResponse> result = adapter.getCharacterInfo("Luke Skywalker");
 
         StepVerifier.create(result)
                 .expectError(WebClientResponseException.InternalServerError.class)
