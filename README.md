@@ -16,12 +16,25 @@ This project uses Hexagonal Architecture (Ports and Adapters) to organize the co
 - **Application Layer**: Manages use cases and interacts with domain models through defined interfaces (ports).
 - **Infrastructure Layer**: Handles communication with external systems like APIs and databases through adapters.
 
-### Benefits:
-- **Separation of Concerns**: Keeps business logic separate from external systems.
-- **Flexibility**: Allows easy changes to external systems without affecting core logic.
-- **Testability**: Enables testing of core logic independently of external systems.
+### Example: Fetching Character Information
 
-This architecture helps keep the application modular, maintainable, and adaptable to changes.
+1. **Client Request**:
+   - The client sends a request to the API to get a character’s information.
+
+2. **Controller**:
+   - The API controller receives the request and calls a service method to process it.
+
+3. **Application Layer**:
+   - The service method in the Application Layer requests data from the `RestAPIStarWarsPersistenceAdapter`.
+
+4. **Persistence Adapter**:
+   - The adapter fetches data from the external Star Wars API and converts it into an internal model (`CharacterDomain`).
+
+5. **Application Layer**:
+   - The internal model is processed and converted into a `CharacterResponseDTO`.
+
+6. **Client Response**:
+   - The controller sends the `CharacterResponseDTO` back to the client.
 
 ## Resources
 
