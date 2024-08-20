@@ -8,14 +8,33 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Film {
-    private String name;
+    private List<CharacterDomain> characters;
+    private String created;
+    private String director;
+    private String edited;
+    @JsonProperty("episode_id")
+    private int episodeId;
+    @JsonProperty("opening_crawl")
+    private String openingCrawl;
+    private List<Planet> planets;
+    private String producer;
     @JsonProperty("release_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date releaseDate;
+    private List<Specie> species;
+    private List<Starship> starships;
+    private String title;
+    private String url;
+    private List<Vehicle> vehicles;
+
+    public Film(String title, Date releaseDate){
+        this.title = title;
+        this.releaseDate = releaseDate;
+    }
 }

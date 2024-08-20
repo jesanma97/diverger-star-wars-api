@@ -4,6 +4,8 @@ import com.diverger.RestAPIStarWars.application.ports.out.RestAPIStarWarsPersist
 import com.diverger.RestAPIStarWars.domain.CharacterDomain;
 import com.diverger.RestAPIStarWars.domain.Film;
 import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.*;
+import com.diverger.RestAPIStarWars.infrastructure.adapters.out.persistence.mappers.CharacterDomainMapper;
+import com.diverger.RestAPIStarWars.infrastructure.adapters.out.persistence.mappers.FilmMapper;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.BadRequestException;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.CharacterNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +86,7 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
                         .uri(filmUrl)
                         .retrieve()
                         .bodyToMono(FilmDTO.class)
-                        .map(filmDTO -> new Film(filmDTO.getTitle(), filmDTO.getReleaseDate()))
+                        .map(this::convertToFilm)
                         .doOnError(throwable -> LOGGER.error("Error occurred while fetching film info for {}", filmUrl, throwable)))
                 .collectList()
                 .doOnError(throwable -> LOGGER.error("Error occurred while collecting film info", throwable));
@@ -109,14 +111,18 @@ public class RestAPIStarWarsPersistenceAdapter implements RestAPIStarWarsPersist
      * @return CharacterResponseDTO with the character's information formatted for the API response.
      */
     private CharacterResponseDTO toCharacterResponseDTO(CharacterDomain character) {
-        return new CharacterResponseDTO(
-                character.getName(),
-                character.getBirthYear(),
-                character.getGender(),
-                character.getPlanetName(),
-                character.getFastestVehicleDriven(),
-                character.getFilms()
-        );
+        return CharacterDomainMapper.INSTANCE.characterDomainToCharacterResponse(character);
+    }
+
+    /**
+     * Converts a FilmDTO to a domain object Film.
+     * This method is used to prepare the data for the domain layer
+     *
+     * @param filmDTO The Film DTO containing all the relevant information.
+     * @return Film with the film's information received in the external API.
+     */
+    private Film convertToFilm(FilmDTO filmDTO) {
+        return new Film(filmDTO.getTitle(), filmDTO.getReleaseDate());
     }
 
     /**

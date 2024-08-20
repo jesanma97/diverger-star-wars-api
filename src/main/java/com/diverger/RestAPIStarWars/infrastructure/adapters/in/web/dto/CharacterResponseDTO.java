@@ -24,5 +24,5 @@ public class CharacterResponseDTO {
     private String planetName;
     @JsonProperty("fastest_vehicle_driven")
     private String fastestVehicleDriven;
-    private List<Film> films;
+    private List<FilmResponseDTO> films;
 }

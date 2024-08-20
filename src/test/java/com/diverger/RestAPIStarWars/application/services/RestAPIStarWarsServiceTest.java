@@ -2,6 +2,7 @@ package com.diverger.RestAPIStarWars.application.services;
 
 import com.diverger.RestAPIStarWars.domain.Film;
 import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.CharacterResponseDTO;
+import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.FilmResponseDTO;
 import com.diverger.RestAPIStarWars.infrastructure.adapters.out.persistence.RestAPIStarWarsPersistenceAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,8 +41,8 @@ public class RestAPIStarWarsServiceTest {
         characterResponse1.setPlanetName("Tatooine");
         characterResponse1.setFastestVehicleDriven("X-wing");
         characterResponse1.setFilms(List.of(
-                new Film("A New Hope", new Date()),
-                new Film("The Empire Strikes Back", new Date())
+                new FilmResponseDTO("A New Hope", new Date()),
+                new FilmResponseDTO("The Empire Strikes Back", new Date())
         ));
 
         CharacterResponseDTO characterResponse2 = new CharacterResponseDTO();
@@ -51,8 +52,8 @@ public class RestAPIStarWarsServiceTest {
         characterResponse2.setPlanetName("Alderaan");
         characterResponse2.setFastestVehicleDriven("Speeder Bike");
         characterResponse2.setFilms(List.of(
-                new Film("A New Hope", new Date()),
-                new Film("Return of the Jedi", new Date())
+                new FilmResponseDTO("A New Hope", new Date()),
+                new FilmResponseDTO("Return of the Jedi", new Date())
         ));
 
         // Convertir los CharacterResponse en un Flux
