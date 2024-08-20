@@ -7,6 +7,22 @@ A RESTFul Java API based on Spring Boot that provides information about characte
 - **Maven**: Required to build the JAR file.
 - **Docker**: Required to build and run the Docker image.
 
+## Architecture Overview
+
+This project uses Hexagonal Architecture (Ports and Adapters) to organize the code.
+
+### Key Points:
+- **Domain Layer**: Contains core business logic and domain models (e.g., `CharacterDomain`).
+- **Application Layer**: Manages use cases and interacts with domain models through defined interfaces (ports).
+- **Infrastructure Layer**: Handles communication with external systems like APIs and databases through adapters.
+
+### Benefits:
+- **Separation of Concerns**: Keeps business logic separate from external systems.
+- **Flexibility**: Allows easy changes to external systems without affecting core logic.
+- **Testability**: Enables testing of core logic independently of external systems.
+
+This architecture helps keep the application modular, maintainable, and adaptable to changes.
+
 ## Resources
 
 In the `src/main/resources` directory, you will find:
