@@ -2,7 +2,7 @@ package com.diverger.RestAPIStarWars.infrastructure.adapters.in.web;
 
 import com.diverger.RestAPIStarWars.application.ports.in.RestAPIStarWarsConsultPort;
 import com.diverger.RestAPIStarWars.application.services.RestAPIStarWarsService;
-import com.diverger.RestAPIStarWars.domain.CharacterResponse;
+import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.CharacterResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -18,7 +18,7 @@ public class RestAPIStarWarsConsultAdapter implements RestAPIStarWarsConsultPort
     }
 
     @Override
-    public Flux<CharacterResponse> getCharacterInfo(String name) {
+    public Flux<CharacterResponseDTO> getCharacterInfo(String name) {
         return restAPIStarWarsService.getCharacterInfo(name);
     }
 }

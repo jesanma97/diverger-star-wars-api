@@ -1,10 +1,8 @@
 package com.diverger.RestAPIStarWars.infrastructure.adapters.out.persistence;
 
-import com.diverger.RestAPIStarWars.domain.CharacterResponse;
 import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.*;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.BadRequestException;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.CharacterNotFoundException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,7 +11,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -89,7 +86,7 @@ class RestAPIStarWarsPersistenceAdapterTest {
         when(responseSpec.bodyToMono(StarshipDTO.class)).thenReturn(Mono.just(starshipDTO));
 
         // Execute the method, now returning a Flux instead of a Mono
-        Flux<CharacterResponse> result = adapter.getCharacterInfo("Luke Skywalker");
+        Flux<CharacterResponseDTO> result = adapter.getCharacterInfo("Luke Skywalker");
 
         // Verify and assert the result using StepVerifier
         StepVerifier.create(result)
@@ -108,7 +105,7 @@ class RestAPIStarWarsPersistenceAdapterTest {
 
         when(responseSpec.bodyToMono(ResultSearchCharacterDTO.class)).thenReturn(Mono.just(resultSearchCharacterDTO));
 
-        Flux<CharacterResponse> result = adapter.getCharacterInfo("Unknown Character");
+        Flux<CharacterResponseDTO> result = adapter.getCharacterInfo("Unknown Character");
 
         StepVerifier.create(result)
                 .expectError(CharacterNotFoundException.class)
@@ -129,7 +126,7 @@ class RestAPIStarWarsPersistenceAdapterTest {
     void getCharacterInfoServerError() {
         when(responseSpec.bodyToMono(ResultSearchCharacterDTO.class)).thenReturn(Mono.error(WebClientResponseException.InternalServerError.create(500, "Internal Server Error", null, null, null)));
 
-        Flux<CharacterResponse> result = adapter.getCharacterInfo("Luke Skywalker");
+        Flux<CharacterResponseDTO> result = adapter.getCharacterInfo("Luke Skywalker");
 
         StepVerifier.create(result)
                 .expectError(WebClientResponseException.InternalServerError.class)

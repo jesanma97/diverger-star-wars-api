@@ -1,9 +1,7 @@
 package com.diverger.RestAPIStarWars.application.services;
 
-import com.diverger.RestAPIStarWars.domain.CharacterResponse;
-import com.diverger.RestAPIStarWars.domain.FilmInfo;
-import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.RestAPIStarWarsConsultAdapter;
-import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.controllers.RestAPIStarWarsController;
+import com.diverger.RestAPIStarWars.domain.Film;
+import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.CharacterResponseDTO;
 import com.diverger.RestAPIStarWars.infrastructure.adapters.out.persistence.RestAPIStarWarsPersistenceAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.Date;
@@ -29,33 +26,33 @@ public class RestAPIStarWarsServiceTest {
     @InjectMocks
     private RestAPIStarWarsService restAPIStarWarsService;
 
-    Flux<CharacterResponse> characterResponseFlux;
+    Flux<CharacterResponseDTO> characterResponseFlux;
 
     @BeforeEach
     public void setUp() {
         this.restAPIStarWarsService = new RestAPIStarWarsService(restAPIStarWarsPersistenceAdapter);
 
         // Configuración de CharacterResponse para las pruebas
-        CharacterResponse characterResponse1 = new CharacterResponse();
+        CharacterResponseDTO characterResponse1 = new CharacterResponseDTO();
         characterResponse1.setName("Luke Skywalker");
         characterResponse1.setBirthYear("19BBY");
         characterResponse1.setGender("male");
         characterResponse1.setPlanetName("Tatooine");
         characterResponse1.setFastestVehicleDriven("X-wing");
         characterResponse1.setFilms(List.of(
-                new FilmInfo("A New Hope", new Date()),
-                new FilmInfo("The Empire Strikes Back", new Date())
+                new Film("A New Hope", new Date()),
+                new Film("The Empire Strikes Back", new Date())
         ));
 
-        CharacterResponse characterResponse2 = new CharacterResponse();
+        CharacterResponseDTO characterResponse2 = new CharacterResponseDTO();
         characterResponse2.setName("Leia Organa");
         characterResponse2.setBirthYear("19BBY");
         characterResponse2.setGender("female");
         characterResponse2.setPlanetName("Alderaan");
         characterResponse2.setFastestVehicleDriven("Speeder Bike");
         characterResponse2.setFilms(List.of(
-                new FilmInfo("A New Hope", new Date()),
-                new FilmInfo("Return of the Jedi", new Date())
+                new Film("A New Hope", new Date()),
+                new Film("Return of the Jedi", new Date())
         ));
 
         // Convertir los CharacterResponse en un Flux
@@ -66,7 +63,7 @@ public class RestAPIStarWarsServiceTest {
     void getCharacterInfo() {
         when(this.restAPIStarWarsPersistenceAdapter.getCharacterInfo(Mockito.anyString())).thenReturn(characterResponseFlux);
 
-        Flux<CharacterResponse> responseFlux = restAPIStarWarsService.getCharacterInfo("Skywalker");
+        Flux<CharacterResponseDTO> responseFlux = restAPIStarWarsService.getCharacterInfo("Skywalker");
 
         StepVerifier.create(responseFlux)
                 .expectNextMatches(characterResponse -> {
