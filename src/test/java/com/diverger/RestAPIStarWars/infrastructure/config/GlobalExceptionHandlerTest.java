@@ -1,6 +1,6 @@
 package com.diverger.RestAPIStarWars.infrastructure.config;
 
-import com.diverger.RestAPIStarWars.domain.ErrorResponse;
+import com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto.ErrorResponse;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.BadRequestException;
 import com.diverger.RestAPIStarWars.infrastructure.commons.exceptions.CharacterNotFoundException;
 import org.junit.jupiter.api.Test;

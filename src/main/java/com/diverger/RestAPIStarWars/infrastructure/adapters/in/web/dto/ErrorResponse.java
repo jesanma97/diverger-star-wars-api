@@ -1,4 +1,4 @@
-package com.diverger.RestAPIStarWars.domain;
+package com.diverger.RestAPIStarWars.infrastructure.adapters.in.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
