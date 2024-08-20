@@ -1,0 +1,119 @@
+openapi: 3.0.0
+info:
+  title: Star Wars Character API
+  description: API to retrieve information about Star Wars characters. The API consumes data from the SWAPI service and provides enriched details about characters.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /swapi-proxy/person-info:
+    get:
+      summary: Retrieve character information
+      description: Retrieves detailed information about a character based on their name, including the home planet, the fastest vehicle driven, and the movies they have appeared in.
+      parameters:
+        - name: name
+          in: query
+          required: true
+          description: Name of the character to search for.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved character information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharacterInfo'
+        
+        '404':
+          description: Not found character
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '400':
+          description: Bad request, e.g., invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBadRequest'
+
+        '405':
+          description: Method not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseMethodNotAllowed'
+        
+components:
+  schemas:
+    CharacterInfo:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: The name of the character.
+            example: Luke Skywalker
+          birth_year:
+            type: string
+            description: The birth year of the character.
+            example: 19BBY
+          gender:
+            type: string
+            description: The gender of the character.
+            example: male
+          planet_name:
+            type: string
+            description: The name of the character's home planet.
+            example: Tatooine
+          fastest_vehicle_driven:
+            type: string
+            description: The name of the fastest vehicle the character has driven.
+            example: X-wing
+          films:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Title of the film.
+                  example: Revenge of the Sith
+                release_date:
+                  type: string
+                  format: date
+                  description: Release date of the film.
+                  example: 2005-05-19
+    ErrorResponse:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: "Character with name Pluto not found"
+
+    ErrorResponseMethodNotAllowed:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          example: 405
+        message:
+          type: string
+          example: "Method not allowed to this request"
+
+    ErrorResponseBadRequest:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "The character name must not be empty"
